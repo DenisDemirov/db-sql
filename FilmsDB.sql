@@ -1,0 +1,131 @@
+CREATE DATABASE FilmsDB;
+
+
+USE FilmsDB;
+
+CREATE TABLE Files
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	Filename VARCHAR(255) NOT NULL UNIQUE,
+	MIME_type VARCHAR(100) NOT NULL,
+	KeyId INT NOT NULL,
+	URL VARCHAR(2048) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (id)
+);
+
+USE FilmsDB;
+
+CREATE TABLE Users 
+(
+ 	id INT NOT NULL AUTO_INCREMENT,
+ 	Username VARCHAR(100) NOT NULL,
+ 	Firstname VARCHAR(100) NOT NULL,
+ 	Lastname VARCHAR(100) NOT NULL,
+  	Email VARCHAR(255) NOT NULL,
+  	Password VARCHAR(255) NOT NULL,
+  	avatar_id INT,
+  	FOREIGN KEY (avatar_id) REFERENCES Files(id),
+  	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (id)
+);
+
+
+USE FilmsDB;
+
+CREATE TABLE Persons
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	Firstname VARCHAR(100) NOT NULL,
+ 	Lastname VARCHAR(100) NOT NULL,
+	Biography TEXT,
+	Date_of_birth DATE NOT NULL,
+	Gender TINYINT NOT NULL CHECK(Gender IN (0,1,2,9)),
+	photo_id INT,
+	FOREIGN KEY (photo_id) REFERENCES Files(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (id)
+);
+
+
+
+USE FilmsDB;
+
+CREATE TABLE Movies
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	Title VARCHAR(255) NOT NULL,
+	Description TEXT NOT NULL,
+	Budget DECIMAL(15, 2),
+	Release_date DATE NOT NULL,
+	Duration INT NOT NULL,
+	director_id INT NOT NULL,
+	FOREIGN KEY (director_id) REFERENCES Persons(id),
+	poster_id INT,
+	FOREIGN KEY (poster_id) REFERENCES Files(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (id)
+);
+
+
+USE FilmsDB;
+
+CREATE TABLE Genres (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+
+USE FilmsDB;
+
+CREATE TABLE MovieGenres (
+    movie_id INT NOT NULL,
+    genre_id INT NOT NULL,
+    PRIMARY KEY (movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES Movies(id),
+    FOREIGN KEY (genre_id) REFERENCES Genres(id)
+);
+
+
+
+USE FilmsDB;
+
+CREATE TABLE Characters
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	Name VARCHAR(100),
+	Description TEXT,
+	Charater_Role VARCHAR(20) NOT NULL CHECK (Charater_Role IN ('leading', 'supporting', 'background')),
+	movie_id INT NOT NULL,
+	FOREIGN KEY (movie_id) REFERENCES Movies(id),
+	actor_id INT,
+	FOREIGN KEY (actor_id) REFERENCES Persons(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (id)
+);
+
+
+USE FilmsDB;
+
+CREATE TABLE FavoriteMovies
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	user_id INT NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES Users(id),
+	movie_id INT,
+	FOREIGN KEY (movie_id) REFERENCES Movies(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (id)
+);
+
+
+
+
